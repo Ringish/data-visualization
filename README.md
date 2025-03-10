@@ -113,6 +113,10 @@ When you’re ready to deploy the application, ensure that the REACT_APP_BASE_PA
 REACT_APP_BASE_PATH=/wp-content/themes/my-theme/build/json-data
 ```
 
+#### Screenshots
+  • Google Sheet Structure: ![Google Sheet Structure](https://raw.githubusercontent.com/Ringish/data-visualization/main/sheet-screenshot.png)
+  • App Visualization Example: ![App Visualization Example](https://raw.githubusercontent.com/Ringish/data-visualization/main/graph-screenshot.png)
+
 #### License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
