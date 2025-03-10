@@ -1,46 +1,120 @@
-# Getting Started with Create React App
+# Data Visualization App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is a Node.js and React-based application that visualizes data, primarily from association annual meetings. The data is sourced from a Google Sheet document, which is then processed and visualized in a user-friendly interface.
 
-## Available Scripts
+## Setup Guide
 
-In the project directory, you can run:
+Follow these steps to set up the project on your local machine.
 
-### `npm start`
+### Prerequisites
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Node.js (v14 or higher)
+- npm (v6 or higher)
+- Google Sheets document with the necessary data
+- Google API Key for Sheets API access
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### 1. Create and Configure Google Sheet
 
-### `npm test`
+1. **Create a Google Sheets document** with your data.
+   - Make sure the structure follows the example provided in the `sheet-screenshot.png` image. This screenshot shows how the data should be structured within the Google Sheet.
+   
+2. **Save the Google Sheets Document ID** from the URL:
+   - The document ID is part of the URL, e.g., `https://docs.google.com/spreadsheets/d/{SHEET_ID}/edit`.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+3. **Create a Google API Key**:
+   - Follow the instructions [here](https://developers.google.com/sheets/api/quickstart/js) to create an API Key.
+   - Make sure to enable the Google Sheets API in the Google Cloud Console for your project.
 
-### `npm run build`
+### 2. Clone the Repository
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+git clone https://github.com/your-repo/data-visualization-app.git
+cd data-visualization-app
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 3. Install Dependencies
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Run the following command to install the necessary dependencies for both React and the JSON Fetcher:
 
-### `npm run eject`
+```bash
+npm install
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### 4. Configure Environment Variables
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Copy the .env.example file and rename it to .env. Then, update the environment variables with your Google API key and Google Sheets document ID:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```env
+REACT_APP_GOOGLE_API_KEY=YOUR_GOOGLE_API_KEY
+REACT_APP_GOOGLE_SHEETS_ID=YOUR_SHEET_ID
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+REACT_APP_BASE_PATH=/json-data
+```
 
-## Learn More
+### 5. Start the Application
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Run the following command to start the frontend application:
+```bash
+npm run start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+This will spin up the React application and make it available on http://localhost:3000.
+
+### 6. Configure Chart Data
+
+The chart configurations need to be mapped to your Google Sheets document. To do this, you need to update the src/config/chartConfig.ts file. Below is an example of how the chart configuration works:
+```typescript
+export const chartConfigs: ChartConfig[] = [
+  { type: "bar", range: "Overview!A21:N32", props: { max: 100, unit: "%" } },
+  {
+    type: "bar",
+    range: "Overview!A62:N74",
+    props: { unit: "kr" },
+    exclude: ["Total"],
+    times: 1000,
+  },
+  // Additional configurations...
+];
+```
+
+type: Define the chart type, either "bar" or "line".
+	•	range: Specify the range in the format SheetName!A1:N10, where SheetName is the name of the sheet, and A1:N10 is the data range.
+	•	props: Define properties like unit, max, and any additional configurations relevant to your chart type.
+
+### 7. Fetch Data and Cache
+
+Once the chart configurations are set, you can fetch and cache the data to avoid repeated API calls to Google Sheets. To do this, run the following commands:
+1.	Install dependencies for the JSON fetcher:
+```bash
+npm run fetcher:install
+```
+2.	Build the fetcher project:
+```bash
+npm run fetcher:build
+```
+3.	Run the fetcher to generate the JSON files:
+```bash
+npm run fetcher:run
+```
+
+The JSON files will be stored locally, and you can configure the app to use them instead of fetching data directly from Google Sheets.
+
+### 8. Update Fetch Source
+
+In your .env file, set REACT_APP_FETCH_SOURCE to "local" to use the locally cached JSON files:
+```env
+REACT_APP_FETCH_SOURCE=local
+```
+
+### 9. Deployment
+
+When you’re ready to deploy the application, ensure that the REACT_APP_BASE_PATH is set correctly for your hosting environment. For example, if deploying to a WordPress site, the base path might look like this:
+```env
+REACT_APP_BASE_PATH=/wp-content/themes/my-theme/build/json-data
+```
+
+#### License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+This README is written for developers who want to set up and contribute to the project. It assumes they have basic knowledge of working with Node.js, React, and Google Sheets.

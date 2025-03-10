@@ -1,26 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
+import { DataProvider } from "./context/DataProvider";
+import CustomBarChartResponsive from "./Charts/BarChart";
+import LineChart from "./Charts/LineChart";
+import { chartConfigs, LineChartProps } from "./config/chartConfigs";
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div className="transparent-graphs">
+      {chartConfigs.map(({ type, range, props, exclude, times }, index) => (
+        <DataProvider
+          key={index}
+          apiConfig={{ range }}
+          exclude={exclude}
+          times={times}
         >
-          Learn React
-        </a>
-      </header>
+          {type === "bar" ? (
+            <CustomBarChartResponsive {...props} />
+          ) : (
+            <LineChart {...(props as LineChartProps)} />
+          )}
+        </DataProvider>
+      ))}
     </div>
   );
-}
+};
 
 export default App;
